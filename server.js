@@ -1,22 +1,29 @@
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient } from "mongodb";
 
 const URI = process.env.URI;
 const client = new MongoClient(URI);
-const HEX_ID = '6a4ca17e6e019f4ba87143d4';
 
-async function run() { 
+async function run() {
   try {
     await client.connect();
+    console.log("Client Connected.");
+
     const db = client.db('learning_zone');
     const studentCollection = db.collection('students');
 
-    console.log("Connected to the database", db.databaseName);
-    console.log("Using Collection", studentCollection.collectionName);
+    await studentCollection.insertMany([
+      { name: "Alice", level: "Beginner", coreLang: "JavaScript" },
+      { name: "Bob", level: "Intermediate", coreLang: "Java" },
+      { name: "Charlie", level: "Mastering Fundamentals", coreLang: "C" }
+    ]);
+    console.log("Data Added!");
 
-    console.log("Finding student with ID:", HEX_ID);
-    const result = await studentCollection.findOne({ _id: new ObjectId(HEX_ID) });
-    console.log("Results:", result);
-    
+    const cursor = studentCollection.find({name: 'Alice'});
+    console.log("Raw cursor object", cursor.constructor.name);
+
+    await cursor.forEach((student) => {
+      console.log("Name", student.name);
+    })
   } catch (err) {
     console.error("An error occurred", err);
   } finally {
