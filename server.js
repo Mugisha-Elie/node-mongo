@@ -9,22 +9,13 @@ async function run() {
     const db = client.db('learning_zone');
     const studentCollection = db.collection('students')
 
-    console.log("Connected successfully");
+    console.log("Connected Successfully");
 
-    const query = {
-      coreLang: {
-        $ne: 'Java',
-        $exists: true
-      }
-    }
+    const results = await studentCollection.deleteMany({});
 
-    const cursor = studentCollection.find(query);
-
-    await cursor.forEach(student => {
-      console.log(student);
-    })
+    console.log("Deletion Results", results);
   } catch (err) {
-    console.error(err);
+    console.log("An error occurred", err)
   } finally {
     await client.close();
   }
