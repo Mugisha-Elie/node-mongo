@@ -1,33 +1,25 @@
 import { MongoClient } from "mongodb";
 
 const URI = process.env.URI;
-
 const client = new MongoClient(URI);
+const HEX_ID = '6a4ca17e6e019f4ba87143d4';
 
 async function run() { 
   try {
-    console.log("Connecting to the databasae");
     await client.connect();
-
-    console.log("Connected to the database");
-
     const db = client.db('learning_zone');
-    console.log(`Connected to database ${db.databaseName}`);
+    const studentCollection = db.collection('students');
 
-    const studentCollection = db.collection('students')
+    console.log("Connected to database");
+    console.log('Retrieving data from student with ID', HEX_ID);
 
-    const newStudent = {
-      name: "January",
-      age: 1
-    }
-
-    const result = await studentCollection.insertOne(newStudent);
-    console.log("Insert results", result)
+    const results = await studentCollection.findOne({ _id: HEX_ID });
+    console.log('Results', results);
   } catch (err) {
-    console.log("An error occurred", err);
+    console.err("An error occured", err);
   } finally {
-    client.close();
+    await client.close()
   }
 }
 
-run();
+run()
