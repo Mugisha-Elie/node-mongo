@@ -6,18 +6,27 @@ const client = new MongoClient(URI);
 
 async function run() { 
   try {
-    console.log("Connecting to the Database...");
-
+    console.log("Connecting to the databasae");
     await client.connect();
-    console.log("Connected to the Database");
+
+    console.log("Connected to the database");
 
     const db = client.db('learning_zone');
-    console.log(`Switched to database ${db.databaseName}`);
+    console.log(`Connected to database ${db.databaseName}`);
+
+    const studentCollection = db.collection('students')
+
+    const newStudent = {
+      name: "January",
+      age: 1
+    }
+
+    const result = await studentCollection.insertOne(newStudent);
+    console.log("Insert results", result)
   } catch (err) {
-    console.error("Connection Failed:", err.message);
+    console.log("An error occurred", err);
   } finally {
-    await client.close();
-    console.log("Connection Closed");
+    client.close();
   }
 }
 
