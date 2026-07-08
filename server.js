@@ -33,9 +33,16 @@ async function run() {
             const searchId = extractIdFromURL(req.url);
   
             const student = await studentCollection.findOne({ _id: new ObjectId(searchId) });
+
   
-            res.writeHead(200);
-            res.end(JSON.stringify(student));
+            if (!student) {
+              res.writeHead(404);
+              res.end(JSON.stringify({message: "Student Not Found"}))
+            } else {
+              res.writeHead(200);
+              res.end(JSON.stringify(student));
+            }
+            
             
           } catch (err) {
             res.writeHead(400);
